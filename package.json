@@ -1,0 +1,13 @@
+{
+  "name": "type-drift",
+  "version": "1.0.0",
+  "description": "Multiplayer typing race with login, dashboard and practice mode",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "qrcode": "^1.5.4",
+    "jsqr": "^1.4.0"
+  }
+}

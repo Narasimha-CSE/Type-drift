@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Type Drift</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header id="nav" hidden>
+  <strong class="logo">Type Drift</strong>
+  <nav>
+    <button data-go="dash">Dashboard</button>
+    <button data-go="practice">Practice</button>
+    <button data-go="race">Race</button>
+    <button data-go="garage">Garage</button>
+    <button id="logout">Log out</button>
+  </nav>
+  <span class="coinchip" title="Your coins">🪙 <b id="navCoins">0</b></span>
+  <span class="online"><i></i><b id="onCount">0</b> online</span>
+</header>
+
+<main>
+  <section id="auth" class="view">
+    <div class="card auth">
+      <div class="keyrow" aria-hidden="true"><i>T</i><i>Y</i><i>P</i><i>E</i><em></em><i>D</i><i>R</i><i>I</i><i>F</i><i>T</i></div>
+      <h1>Type Drift</h1>
+      <p class="mut tagline"><span id="tagline"></span><i class="caret"></i></p>
+      <canvas id="authCars" class="authCars" width="880" height="280" aria-hidden="true"></canvas>
+      <h2 class="authMode" id="authTitle">Captcha login</h2>
+      <form id="authForm">
+        <label>Driver name<input id="u" autocomplete="username" maxlength="16" required spellcheck="false" placeholder="Type your driver name"></label>
+        <div class="capbox">
+          <div id="capImg" class="capImg" aria-live="polite"></div>
+          <button type="button" id="capNew" title="New code" aria-label="New captcha code">&#8635;</button>
+        </div>
+        <label>Type the code you see<input id="capIn" maxlength="5" autocomplete="off" spellcheck="false" placeholder="CODE" required></label>
+        <p id="capStat" class="capStat" hidden>&#10003; Verified</p>
+        <p id="err" class="err"></p>
+        <button class="primary" id="authBtn">Verify &amp; start driving</button>
+      </form>
+      <p class="mut swap">No password and no sign-up. Pick a driver name and solve the captcha.</p>
+    </div>
+  </section>
+
+  <section id="dash" class="view" hidden>
+    <h2>Welcome, <span id="who"></span></h2>
+    <div class="ticker" aria-hidden="true"><div class="tickTrack"></div></div>
+    <div class="card hero">
+      <div class="heroTxt">
+        <h3 class="typed"><span id="heroLine"></span><i class="caret"></i></h3>
+        <p class="mut">Your ride: <b id="heroCarName">Street Hatch</b></p>
+        <div class="kb" id="kb" aria-hidden="true"></div>
+        <div class="btns"><button class="primary" data-go="race">&#127937; Race now</button><button data-go="practice">Practice</button><button data-go="garage">Garage</button></div>
+      </div>
+      <canvas id="heroCar" width="560" height="220"></canvas>
+    </div>
+    <div class="grid3">
+      <div class="card stat"><b id="sRaces">0</b>Races<i class="sbar"><u id="bRaces"></u></i></div>
+      <div class="card stat"><b id="sWins">0</b>Wins<i class="sbar"><u id="bWins"></u></i></div>
+      <div class="card stat"><b id="sBest">0</b>Best WPM<i class="sbar"><u id="bBest"></u></i></div>
+      <div class="card stat coin"><b><span class="coinic">🪙</span> <span id="sCoins">0</span></b>Coins<i class="sbar"><u id="bCoins"></u></i></div>
+    </div>
+    <div class="card paradeCard"><div class="row"><h3>Car parade</h3><span class="mut">Audi, Tata, Fortuner and more driving past</span></div><canvas id="parade" width="960" height="150"></canvas></div>
+    <div class="grid2">
+      <div class="card"><h3>Online users</h3><ul id="onList" class="list"></ul></div>
+      <div class="card"><h3>Top speeds</h3><ol id="lbList" class="list"></ol></div>
+    </div>
+    <div class="card"><h3>Race history</h3><ul id="hist" class="hist"></ul></div>
+    <div class="card row">
+      <div><h3>🚗 Garage</h3><p class="mut">Buy new cars with your coins, sell cars you no longer want, and equip your favourite design.</p></div>
+      <canvas id="garageShow" class="garageShow" width="300" height="130" aria-hidden="true"></canvas>
+      <div class="btns"><button class="primary" data-go="garage">Open garage</button></div>
+    </div>
+    <div class="card row">
+      <div><h3>Multiplayer race</h3><p class="mut">Create a room, then share the code or QR so friends can join.</p></div>
+      <div class="btns"><button class="primary" data-go="race">Race</button><button data-go="practice">Practice</button></div>
+    </div>
+  </section>
+
+  <section id="practice" class="view" hidden>
+    <div class="row"><h2>Practice <span class="mut">no time limit</span></h2><button data-go="dash">← Back</button></div>
+    <div class="box" id="pbox"></div>
+    <div class="stats"><span>Speed <b id="pw">0</b> WPM</span><span>Accuracy <b id="pa">100%</b></span><span>Letters <b id="pc">0</b></span>
+      <button id="pr">Restart</button></div>
+  </section>
+
+  <section id="garage" class="view" hidden>
+    <div class="row"><h2>Garage <span class="mut">buy, sell &amp; equip</span></h2><span class="coinchip">🪙 <b id="gCoins">0</b></span><button data-go="dash">← Back</button></div>
+    <div class="chips" id="gfilter"><button data-f="all" class="on">All cars</button><button data-f="real">Real cars</button><button data-f="orig">Originals</button></div>
+    <div id="gtips" class="card tips"></div>
+    <p id="gmsg" class="mut"></p>
+    <div id="cars" class="carsgrid"></div>
+  </section>
+
+  <section id="race" class="view" hidden>
+    <div id="gate">
+      <div class="backrow"><button data-go="dash">← Back to dashboard</button></div>
+      <div class="card">
+        <h2>Host a race</h2>
+        <p class="mut">Pick the race timer (presets or your own custom 1-60 minutes), then share your team code or QR with friends.</p>
+        <label>Race timer<select id="mins"><option value="1">1 minute</option><option value="2">2 minutes</option><option value="3">3 minutes</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option><option value="custom">Custom...</option></select></label>
+        <label id="minsCw" hidden>Custom minutes (1-60)<input id="minsC" type="number" min="1" max="60" value="7" inputmode="numeric"></label>
+        <label>Sentence style<select id="diff"><option value="easy">Easy: short, simple words</option><option value="medium" selected>Medium: everyday words</option><option value="hard">Hard: long words, commas, numbers</option></select></label>
+        <button class="primary" id="mkRoom">Create room</button>
+      </div>
+      <div class="card">
+        <h2>Join a race</h2>
+        <p class="mut">Scan a QR code, enter a team code, or race computer players in a random match.</p>
+        <label>Race time<select id="qMins"><option value="1">1 minute</option><option value="2">2 minutes</option><option value="3">3 minutes</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option><option value="custom">Custom...</option></select></label>
+        <label id="qMinsCw" hidden>Custom minutes (1-60)<input id="qMinsC" type="number" min="1" max="60" value="7" inputmode="numeric"></label>
+        <label>Sentence style<select id="qDiff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>
+        <button class="primary" id="quickBtn">⚡ Random players (up to 8)</button>
+        <button class="primary" id="scanBtn">Scan QR code</button>
+        <button id="codeBtn">Join with team code</button>
+        <form id="jf" hidden><input id="jc" placeholder="TEAM CODE" maxlength="5" autocomplete="off"><button>Join</button></form>
+      </div>
+      <p id="gerr" class="err"></p>
+      <div class="card histcard"><h3>Results history</h3><ul id="hist2" class="hist"></ul></div>
+    </div>
+    <div id="lobby" class="card" hidden>
+      <div class="lobbygrid">
+        <div class="qr"><img id="qr" alt="Scan to join"><small id="qrUrl"></small></div>
+        <div>
+          <span class="mut">Room code</span>
+          <div class="code" id="code"></div>
+          <button id="copy">Copy link</button>
+          <span class="mut">Race timer</span><div class="chips" id="chips"><button data-m="1">1 min</button><button data-m="2">2 min</button><button data-m="3">3 min</button><button data-m="5">5 min</button><button data-m="10">10 min</button><button data-m="15">15 min</button><button data-m="20">20 min</button><button data-m="30">30 min</button></div>
+          <div class="custom"><span class="mut">Custom</span><input id="lcMin" type="number" min="1" max="60" placeholder="min" inputmode="numeric"><button id="lcSet">Set</button><small class="mut" id="lcNote"></small></div>
+          <span class="mut">Sentence style</span><div class="chips" id="dchips"><button data-d="easy">Easy</button><button data-d="medium">Medium</button><button data-d="hard">Hard</button></div>
+          <h3 class="sp">Players</h3><ul id="lpl" class="list"></ul>
+          <div class="btns"><button class="primary" id="startBtn">Start race</button><button id="leave">Leave room</button><button data-go="dash">← Back</button></div>
+          <p class="mut" id="lhint"></p>
+        </div>
+      </div>
+    </div>
+    <div id="arena" hidden>
+      <div class="row"><h2>Race <span class="mut" id="limit"></span></h2><span id="rStatus" class="pill"></span></div>
+      <div class="timebar"><i id="tb"></i></div>
+      <div class="trackwrap"><canvas id="cv" width="1000" height="420"></canvas><div id="big"></div></div>
+      <div class="box" id="rbox"></div>
+      <div class="stats"><span>Speed <b id="rw">0</b> WPM</span><span>Accuracy <b id="ra">100%</b></span><span>Position <b id="rp">-</b></span></div>
+    </div>
+  </section>
+</main>
+<div id="scan" hidden><video id="vid" playsinline muted></video><div id="scanCode" hidden><span class="mut">Match code</span><b></b></div><p id="scanMsg" class="mut"></p><form id="scanForm"><input id="scanInput" placeholder="TYPE MATCH CODE" maxlength="5" autocomplete="off"><button class="primary">Join</button></form><button id="scanClose">← Back</button></div>
+<div id="resModal" hidden><div id="rain"></div><div class="resbox rd"><div id="resHead"></div><p id="resSub" class="mut"></p>
+  <div id="resPodium" class="podium"></div>
+  <div id="resMine" class="minegrid"></div>
+  <h3 class="rdh">Race dashboard <span class="mut">ranked by finish &amp; performance</span></h3>
+  <div id="resRows"></div>
+  <div id="resCoins" class="coinbox" hidden><div class="coinhead">&#129689; <b id="coinTotal">+0</b> coins earned</div><ul id="coinParts"></ul></div>
+  <div class="btns resbtns"><button class="primary" id="resHome">&#127968; Home page</button><button class="primary" id="resRetry">&#128260; Retry</button></div>
+  <p class="mut small">Choose one. The next match never starts automatically: after Retry the host starts it from the lobby.</p></div></div>
+<div id="splash" hidden>
+  <div class="spRoad"><span>&#127950;&#65039;</span></div>
+  <div class="spStreaks"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="spCenter">
+    <svg class="spLogo" viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="spRing" cx="60" cy="60" r="52"/>
+      <path class="spT" d="M34 40h52M60 40v44"/>
+      <path class="spChev c1" d="M30 94l12-10-12-10"/><path class="spChev c2" d="M46 94l12-10-12-10"/><path class="spChev c3" d="M62 94l12-10-12-10"/>
+    </svg>
+    <h1 class="spTitle" aria-label="Type Drift"></h1>
+    <p class="spWelcome"></p>
+    <div class="spBar"><i></i></div>
+    <small class="spSkip">Click anywhere to skip</small>
+  </div>
+</div>
+<script src="/cars.js"></script>
+<script src="/scene3d.js"></script>
+<script src="/typefx.js"></script>
+<script src="/homefx.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
